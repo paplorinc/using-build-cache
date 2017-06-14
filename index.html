@@ -140,8 +140,8 @@ This can also extend to rebuilding different commits, like when running <code>gi
 <div class="paragraph">
 <p>The build cache can do more than go back-and-forth in time: it can also bridge physical distance between computers, allowing results generated on one machine to be re-used by another.
 A typical first step when introducing the build cache within a team is to enable it for builds running as part of <em>continuous integration</em> only. Using a shared HTTP build cache backend (such as <a href="https://gradle.com/build-cache/">the one provided by Gradle Enterprise</a>) can significantly reduce the work CI agents need to do.
-This translates into much faster feedback for developers, and less money spent on the CI resources.
-Faster builds also mean fewer commits being part of each build, which makes debugging issues much more efficient.</p>
+This translates into faster feedback for developers, and less money spent on the CI resources.
+Faster builds also mean fewer commits being part of each build, which makes debugging issues more efficient.</p>
 </div>
 <div class="paragraph">
 <p>Beginning with the build cache on CI is a good first step as the environment on CI agents is usually more stable and predictable than developer machines.
@@ -156,7 +156,7 @@ It will allow you to easily find out which build produced an artifact coming fro
 <div class="sect2">
 <h3 id="accelerate_developer_builds_by_reusing_ci_results"><a class="anchor" href="#accelerate_developer_builds_by_reusing_ci_results"></a>1.3. Accelerate developer builds by reusing CI results</h3>
 <div class="paragraph">
-<p>When multiple developers work on the same project, they don&#8217;t just need to build their own changes: whenever they pull from version control, they end up having to build each others' changes as well.
+<p>When multiple developers work on the same project, they don&#8217;t just need to build their own changes: whenever they pull from version control, they end up having to build each other&#8217;s changes as well.
 Whenever a developer is working on something independent of the pulled changes, they can safely re-use outputs already generated on CI.
 Say, you&#8217;re working on module "A", and you pull in some changes to module "B" (which does not depend on your module).
 If those changes were already built in CI, you can download the task outputs for module "B" from the cache instead of generating them locally.
@@ -256,7 +256,8 @@ This can happen if you have tasks in your build that are configured to produce t
 </div>
 <div class="paragraph">
 <p>Normally, your <em>fully cached</em> build should be significantly faster than the <code>clean</code> build: this is the theoretical limit of how much time using the build cache can save on your particular build.
-If you do not see the expected performance gains here on the first try, see <a href="#finding_problems">"Finding problems with task output caching"</a>.
+You usually don&#8217;t get the achievable performance gains on the first try, see <a href="#finding_problems">"Finding problems with task output caching"</a>.
+As your build logic is evolving and changing it is also important to make sure that the cache effectiveness is not regressing.
 Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:</p>
 </div>
 <div class="imageblock screenshot">
@@ -265,7 +266,8 @@ Build scans provide a detailed performance breakdown which show you how effectiv
 </div>
 </div>
 <div class="paragraph">
-<p>In everyday situations fully cached builds are rare, as the purpose of running a build is to process some new changes.
+<p>Fully cached builds occur in situations when developers check out the latest from version control and then build, for example to generate the latest sources they need in their IDE.
+The purpose of running most builds though is to process some new changes.
 The structure of the software being built (how many modules are there, how independent are its parts etc.), and the nature of the changes themselves ("big refactor in the core of the system" vs. "small change to a unit test" etc.) strongly influence the performance gains delivered by the build cache.
 As developers tend to submit different kinds of changes over time, caching performance is expected to vary with each change.
 As with any cache, the impact should therefore be measured over time.</p>
@@ -284,11 +286,11 @@ As with any cache, the impact should therefore be measured over time.</p>
 It&#8217;s important to distinguish those parts of the pipeline that caching has no effect on, for example, the time builds spend waiting in the CI system&#8217;s queue, or time taken by checking out source code from version control.</p>
 </div>
 <div class="paragraph">
-<p>You can use <a href="https://confluence.jetbrains.com/display/TCD10/Statistic+Charts">statistic charts</a> if you use Teamcity for your CI builds.
-Most of time you will end up extracting data from your CI server via the corresponding REST API (see <a href="https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API">Jenkins remote access API</a> and <a href="https://confluence.jetbrains.com/display/TCD10/REST+API">Teamcity REST API</a>).
-When using Gradle Enterprise, you can use the <a href="https://docs.gradle.com/enterprise/export-api/">export API</a> to access the necessary data and run your analytics.
-Gradle Enterprise provides richer data compared to what can be obtained from the CI server.
-For example, you can get insights into the execution of single tasks.</p>
+<p>When using Gradle Enterprise, you can use the <a href="https://docs.gradle.com/enterprise/export-api/">export API</a> to access the necessary data and run your analytics.
+Gradle Enterprise provides much richer data compared to what can be obtained from CI servers.
+For example, you can get insights into the execution of single tasks, how many tasks were retrieved from the cache, how long it took to download from the cache, the properties that were used to calculate the cache key and more.
+When using your CI servers built in functions, you can use <a href="https://confluence.jetbrains.com/display/TCD10/Statistic+Charts">statistic charts</a> if you use Teamcity for your CI builds.
+Most of time you will end up extracting data from your CI server via the corresponding REST API (see <a href="https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API">Jenkins remote access API</a> and <a href="https://confluence.jetbrains.com/display/TCD10/REST+API">Teamcity REST API</a>).</p>
 </div>
 <div class="paragraph">
 <p>Typically, CI builds above a certain size include parallel sections to utilize multiple agents. With parallel pipelines you can measure the wall-clock time it takes for a set of changes to go from having been pushed to version control to being built, verified and deployed. The build cache&#8217;s effect in this case can be measured in the reduction of the time developers have to wait for feedback from CI.</p>
@@ -339,7 +341,7 @@ A rise in the hit rate there probably indicates better usage by developers:</p>
 <h2 id="important_concepts"><a class="anchor" href="#important_concepts"></a>3. Important concepts</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>How much of your build gets loaded from cache depends on many factors.
+<p>How much of your build gets loaded from the cache depends on many factors.
 In this section you will see some of the tools that are essential for well-cached builds.
 <a href="https://gradle.com/build-scans">Build scans</a> are part of that toolchain and will be used throughout this guide.</p>
 </div>
@@ -1436,7 +1438,7 @@ They will continue improving the build cache and give you more tools to make you
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-14 07:27:12 UTC
+Last updated 2017-06-14 08:09:53 UTC
 </div>
 </div>
 </body>
