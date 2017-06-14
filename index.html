@@ -110,8 +110,8 @@ Gradle&#8217;s <a href="https://docs.gradle.org/4.0-rc-2/userguide/more_about_ta
 </div>
 <div class="paragraph">
 <p>This guide covers the different use cases for Gradle’s build cache, from local-only development to caching task outputs across large teams.
-Our intended audience are build engineers already familiar with the build cache who are looking to enable it for their existing builds.
-We will discuss ways to measure the advantages provided by the build cache, and methods to improve cache performance, or to diagnose and fix common problems.
+Our intended audience is build engineers already familiar with the build cache who are looking to enable it for their existing builds.
+This guide will discuss ways to measure the advantages provided by the build cache, methods to improve cache performance, and how to diagnose and fix common problems.
 Let’s dive in!</p>
 </div>
 </div>
@@ -125,22 +125,22 @@ Let’s dive in!</p>
 <div class="sect2">
 <h3 id="speed_up_developer_builds_with_the_local_cache"><a class="anchor" href="#speed_up_developer_builds_with_the_local_cache"></a>1.1. Speed up developer builds with the local cache</h3>
 <div class="paragraph">
-<p>Even when used by a single developer only, the build cache can be pretty useful.
-Gradle&#8217;s <em>incremental build</em> feature helps to avoid work that is already done, but once you re-execute task, any previous results are forgotten.
+<p>Even when used by a single developer only, the build cache can be very useful.
+Gradle&#8217;s <em>incremental build</em> feature helps to avoid work that is already done, but once you re-execute a task, any previous results are forgotten.
 When you are switching branches back and forth, the local results get rebuilt over and over again, even if you are building something that has already been built before.
-The build cache remembers the earlier build results, though, and heavily reduces the need to rebuild things when they were already built locally.
-In general it&#8217;s also very useful when you need to rebuild different commits, like when running <code>git bisect</code>.</p>
+The build cache remembers the earlier build results, and greatly reduces the need to rebuild things when they have already been built locally.
+This can also extend to rebuilding different commits, like when running <code>git bisect</code>.</p>
 </div>
 <div class="paragraph">
-<p>The local cache can also be useful when working with a project that has multiple variants dimensions, like in the case of Android applications. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up doing the same things. With the local cache enabled re-use between task variants will happen automatically when applicable.</p>
+<p>The local cache can also be useful when working with a project that has multiple variants dimensions, as in the case of Android projects. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up producing the same output. With the local cache enabled, re-use between task variants will happen automatically when applicable.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="share_results_between_ci_builds"><a class="anchor" href="#share_results_between_ci_builds"></a>1.2. Share results between CI builds</h3>
 <div class="paragraph">
-<p>The build cache can do more than going back-and-forth in time: it can also bridge physical distance between computers, allowing results generated on one machine to be re-used by another.
-A usual first step when introducing the build cache within a team is to enable it for builds running as part of <em>continuous integration</em> only. Using a shared HTTP build cache backend (such as <a href="https://gradle.com/build-cache/">the one provided by Gradle Enterprise</a>) can significantly reduce the work CI agents need to do.
-This translates into much faster feedback to developers, and less money spent on the CI infrastructure.
+<p>The build cache can do more than go back-and-forth in time: it can also bridge physical distance between computers, allowing results generated on one machine to be re-used by another.
+A typical first step when introducing the build cache within a team is to enable it for builds running as part of <em>continuous integration</em> only. Using a shared HTTP build cache backend (such as <a href="https://gradle.com/build-cache/">the one provided by Gradle Enterprise</a>) can significantly reduce the work CI agents need to do.
+This translates into much faster feedback for developers, and less money spent on the CI resources.
 Faster builds also mean fewer commits being part of each build, which makes debugging issues much more efficient.</p>
 </div>
 <div class="paragraph">
@@ -150,12 +150,7 @@ This helps to identify any possible issues with the build that may affect cachea
 <div class="paragraph">
 <p>If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
 Gradle Enterprise 2017.4 may help you with fulfilling these requirements while still using the build cache for all your builds.
-It will allow you to easily find out which build produced an artifact coming from the build cache by clicking on the corresponding icon in the timeline:</p>
-</div>
-<div class="imageblock screenshot">
-<div class="content">
-<img src="images/from-cache-origin.png" alt="from cache origin">
-</div>
+It will allow you to easily find out which build produced an artifact coming from the build cache via build scans.</p>
 </div>
 </div>
 <div class="sect2">
@@ -180,8 +175,8 @@ A typical use case for this is when developers start their day, pull all changes
 <div class="sect2">
 <h3 id="share_results_between_developers"><a class="anchor" href="#share_results_between_developers"></a>1.5. Share results between developers</h3>
 <div class="paragraph">
-<p>It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI had a chance to build them.
-While sharing results from developer machines seems like a good idea at first sight, it might not always be what you are looking for:</p>
+<p>It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI has had a chance to build them.
+Before implementing such a strategy, there are some things to be considered when sharing cached output between developers:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -206,7 +201,7 @@ While sharing results from developer machines seems like a good idea at first si
 <p>The sole reason to use any build cache is to make builds faster.
 But how much faster can you go when using the cache?
 Measuring the impact is both important and complicated, as cache performance is determined by many factors.
-Initial measurements of the cache&#8217;s impact can validate the extra effort (work, infrastructure) that was required to start using the cache.
+Performing measurements of the cache&#8217;s impact can validate the extra effort (work, infrastructure) that is required to start using the cache.
 These measurements can later serve as baselines for future improvements, and to watch for signs of regressions.</p>
 </div>
 <div class="admonitionblock note">
@@ -237,7 +232,7 @@ These measurements can later serve as baselines for future improvements, and to 
 <p>Run the build (e.g. <code>./gradlew --build-cache clean assemble</code>), so that all the results from cacheable tasks get stored in the cache.</p>
 </li>
 <li>
-<p>Run the build again (e.g. <code>./gradlew --build-cache clean assemble</code>); depending on your build, this time you should see many of the tasks being cached.</p>
+<p>Run the build again (e.g. <code>./gradlew --build-cache clean assemble</code>); depending on your build, you should see many of the tasks being retrieved from the cache.</p>
 </li>
 <li>
 <p>Compare the execution time for the two builds</p>
@@ -252,7 +247,7 @@ These measurements can later serve as baselines for future improvements, and to 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You might have encountered a few cached tasks even in the first of the two builds, where no previously cached results should be available.
+<p>You may encounter a few cached tasks even in the first of the two builds, where no previously cached results should be available.
 This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply re-use its output for the rest of the tasks.</p>
 </div>
 </td>
@@ -260,7 +255,7 @@ This can happen if you have tasks in your build that are configured to produce t
 </table>
 </div>
 <div class="paragraph">
-<p>Normally, your <em>fully cached</em> build should be significantly faster than the <code>clean</code> build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running.
+<p>Normally, your <em>fully cached</em> build should be significantly faster than the <code>clean</code> build: this is the theoretical limit of how much time using the build cache can save on your particular build.
 If you do not see the expected performance gains here on the first try, see <a href="#finding_problems">"Finding problems with task output caching"</a>.
 Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:</p>
 </div>
@@ -273,7 +268,7 @@ Build scans provide a detailed performance breakdown which show you how effectiv
 <p>In everyday situations fully cached builds are rare, as the purpose of running a build is to process some new changes.
 The structure of the software being built (how many modules are there, how independent are its parts etc.), and the nature of the changes themselves ("big refactor in the core of the system" vs. "small change to a unit test" etc.) strongly influence the performance gains delivered by the build cache.
 As developers tend to submit different kinds of changes over time, caching performance is expected to vary with each change.
-As with any cache, the impact should thus be measured over time.</p>
+As with any cache, the impact should therefore be measured over time.</p>
 </div>
 <div class="paragraph">
 <p>In a setup where a team uses a shared cache backend, there are two locations worth measuring cache impact at: on CI and on developer machines.</p>
@@ -285,13 +280,13 @@ As with any cache, the impact should thus be measured over time.</p>
 <p>The best way to learn about the impact of caching on CI is to set up the same builds with the cache enabled and disabled, and compare the results over time. If you have a single Gradle build step that you want to enable caching for, it&#8217;s easy to compare the results using your CI system&#8217;s built-in statistical tools.</p>
 </div>
 <div class="paragraph">
-<p>Measuring complex pipelines requires some more work, and some external tool to collect and process measurements.
-It&#8217;s important to distinguish those parts of the pipeline that caching has no effect on, for example the time builds spend waiting in the CI system&#8217;s queue, or time taken by checking out source code from version control.</p>
+<p>Measuring complex pipelines may require more work or external tools to collect and process measurements.
+It&#8217;s important to distinguish those parts of the pipeline that caching has no effect on, for example, the time builds spend waiting in the CI system&#8217;s queue, or time taken by checking out source code from version control.</p>
 </div>
 <div class="paragraph">
 <p>You can use <a href="https://confluence.jetbrains.com/display/TCD10/Statistic+Charts">statistic charts</a> if you use Teamcity for your CI builds.
 Most of time you will end up extracting data from your CI server via the corresponding REST API (see <a href="https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API">Jenkins remote access API</a> and <a href="https://confluence.jetbrains.com/display/TCD10/REST+API">Teamcity REST API</a>).
-When using Gradle Enterprise, you can use the <a href="https://docs.gradle.com/enterprise/export-api/">export API</a> to access the necessary data and run your analytics on them.
+When using Gradle Enterprise, you can use the <a href="https://docs.gradle.com/enterprise/export-api/">export API</a> to access the necessary data and run your analytics.
 Gradle Enterprise provides richer data compared to what can be obtained from the CI server.
 For example, you can get insights into the execution of single tasks.</p>
 </div>
@@ -299,7 +294,7 @@ For example, you can get insights into the execution of single tasks.</p>
 <p>Typically, CI builds above a certain size include parallel sections to utilize multiple agents. With parallel pipelines you can measure the wall-clock time it takes for a set of changes to go from having been pushed to version control to being built, verified and deployed. The build cache&#8217;s effect in this case can be measured in the reduction of the time developers have to wait for feedback from CI.</p>
 </div>
 <div class="paragraph">
-<p>You can also measure the cumulative time it took to build a changeset, which will give you a sense of the amount of work the CI infrastructure has to exert. The cache&#8217;s effect here is less money spent on CI infrastructure, as you don&#8217;t need as many CI agents to maintain the same number of changes built.</p>
+<p>You can also measure the cumulative time your build agents spent building a changeset, which will give you a sense of the amount of work the CI infrastructure has to exert. The cache&#8217;s effect here is less money spent on CI resources, as you don&#8217;t need as many CI agents to maintain the same number of changes built.</p>
 </div>
 <div class="paragraph">
 <p>If you want to look at the measurement for the Gradle build itself you can have a look at the blog post <a href="https://blog.gradle.org/introducing-gradle-build-cache">Introducing the build cache</a>.</p>
@@ -308,7 +303,7 @@ For example, you can get insights into the execution of single tasks.</p>
 <div class="sect2">
 <h3 id="measuring_developer_builds"><a class="anchor" href="#measuring_developer_builds"></a>2.3. Measuring developer builds</h3>
 <div class="paragraph">
-<p>Gradle&#8217;s build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can re-use cached results in their local builds. This is also the hardest to quantize for a number of reasons:</p>
+<p>Gradle&#8217;s build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can re-use cached results in their local builds. This is also the hardest to quantify for a number of reasons:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -325,8 +320,8 @@ For example, you can get insights into the execution of single tasks.</p>
 </div>
 <div class="paragraph">
 <p>When using Gradle Enterprise you can use the <a href="https://docs.gradle.com/enterprise/export-api/">export API</a> to extract data about developer builds, too.
-You can then create statistics on how many tasks where cached per developer or build.
-You can even compare the times it took to execute the task to pulling it from the cache and then estimate the time saved per developer.</p>
+You can then create statistics on how many tasks were cached per developer or build.
+You can even compare the times it took to execute the task vs pulling it from the cache and then estimate the time saved per developer.</p>
 </div>
 <div class="paragraph">
 <p>When using the <a href="https://gradle.com/build-cache">Gradle Enterprise build cache backend</a> you should pay close attention to the hit rate in the admin UI.
@@ -352,8 +347,7 @@ In this section you will see some of the tools that are essential for well-cache
 <h3 id="build_cache_key"><a class="anchor" href="#build_cache_key"></a>3.1. Build cache key</h3>
 <div class="paragraph">
 <p>Artifacts in the build cache are uniquely identified by a <em><a href="https://docs.gradle.org/nightly/userguide/build_cache.html#sec:task_output_caching_details">build cache key</a>.</em>
-A build cache key is assigned to each cacheable task when running with the build cache enabled.
-It is used for loading and storing task outputs to the build cache.
+A build cache key is assigned to each cacheable task when running with the build cache enabled and is used for both loading and storing task outputs to the build cache.
 The following inputs contribute to the build cache key for a task:</p>
 </div>
 <div class="ulist">
@@ -390,18 +384,17 @@ Tasks that depend on the code generator&#8217;s output will need to be re-execut
 <div class="paragraph">
 <p>When a task is cacheable, then the very nature of task output caching makes sure that the task will have the same outputs for a given set of inputs.
 Therefore, cacheable tasks should have repeatable task outputs.
-If they don&#8217;t, then the result of executing the task and loading the task from the cache may be different which can lead to hard-to-diagnose cache misses.</p>
+If they don&#8217;t, then the result of executing the task and loading the task from the cache may be different, which can lead to hard-to-diagnose cache misses.</p>
 </div>
 <div class="paragraph">
-<p>For non-cacheable tasks it not that important to have repeatable task outputs.
-The key here is that no cacheable task has non-repeatable task outputs as an input.</p>
+<p>The key here is that no cacheable task should have non-repeatable task outputs as an input.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="stable_task_inputs"><a class="anchor" href="#stable_task_inputs"></a>3.3. Stable task inputs</h3>
 <div class="paragraph">
 <p>Having a task repeatably produce the same output is not enough if its inputs keep changing all the time.
-Such unstable inputs can be supplied directly to the task. Think of a version number that includes a timestamp being added to the jar file&#8217;s manifest:</p>
+Such unstable inputs can be supplied directly to the task. Consider a version number that includes a timestamp being added to the jar file&#8217;s manifest:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -415,9 +408,12 @@ jar {
 </div>
 </div>
 <div class="paragraph">
+<p>In the above example the inputs for the <code>jar</code> task will be different for each build execution since this timestamp will continually change.</p>
+</div>
+<div class="paragraph">
 <p>Another example for unstable inputs is the commit ID from version control.
 Maybe your version number is generated via <code>git describe</code> (and you include it in the jar manifest as shown above).
-Or maybe you include the commit hash directly in <code>version.properties</code> or a JAR manifest attribute.
+Or maybe you include the commit hash directly in <code>version.properties</code> or a jar manifest attribute.
 Either way, the outputs produced by any tasks depending on such data will only be re-usable by builds running against the exact same commit.</p>
 </div>
 <div class="paragraph">
@@ -425,7 +421,7 @@ Either way, the outputs produced by any tasks depending on such data will only b
 </div>
 <div class="paragraph">
 <p>A task can only be loaded from the cache if it has stable task inputs.
-Unstable task inputs result in the task having a unique set of inputs for every build, and cached outputs cannot be reused.</p>
+Unstable task inputs result in the task having a unique set of inputs for every build, which will always result in a cache miss.</p>
 </div>
 </div>
 <div class="sect2">
@@ -457,7 +453,7 @@ This is the default for properties not declaring path sensitivity, too.</p>
 </div>
 <div class="paragraph">
 <p>For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes would fail the build.
-However, moving the files around would have no effect on the result of the compilation.
+However, moving the files around has no effect on the result of the compilation.
 Therefore, the path sensitivity for the sources of the <code>JavaCompile</code> task is <code>NAME_ONLY</code>. Because of this only the normalized paths of the Java source files&#8201;&#8212;&#8201;the file names&#8201;&#8212;&#8201;are considered as inputs to the <code>JavaCompile</code> task.</p>
 </div>
 <div class="admonitionblock note">
@@ -491,7 +487,7 @@ For more information on compile avoidance see the corresponding section in the <
 <div class="sect4">
 <h5 id="runtime_classpath"><a class="anchor" href="#runtime_classpath"></a>Runtime classpath normalization</h5>
 <div class="paragraph">
-<p>Similar to compile avoidance, Gradle does understand the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
+<p>Similar to compile avoidance, Gradle also understands the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
 For runtime classpaths Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
 This means that a rebuilt jar file would be considered the same runtime classpath input.
 For details on what level of understanding Gradle has for detecting changes to classpaths and what is considered as a classpath see the <a href="https://docs.gradle.org/4.0-rc-2/userguide/more_about_tasks.html#sec:task_input_using_classpath_annotations">user guide</a>.</p>
@@ -530,8 +526,8 @@ This will not change the runtime behavior of the <code>test</code> task&#8201;&#
 <div class="paragraph">
 <p>When two tasks write to the same output directory or output file, it is difficult for Gradle to determine which output belongs to which task.
 There are many edge cases, and executing the tasks in parallel cannot be done safely.
-It is also hard to automatically remove <a href="https://docs.gradle.org/4.0-rc-2/userguide/more_about_tasks.html#sec:stale_task_outputs">stale output files</a> for the same reason.
-Tasks that have dedicated, non-overlapping outputs can always be handled in a safe fashion by Gradle.
+For the same reason, Gradle cannot remove <a href="https://docs.gradle.org/4.0-rc-2/userguide/more_about_tasks.html#sec:stale_task_outputs">stale output files</a> for these tasks.
+Tasks that have discrete, non-overlapping outputs can always be handled in a safe fashion by Gradle.
 For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.</p>
 </div>
 <div class="paragraph">
@@ -565,7 +561,7 @@ These tasks can safely re-use each other&#8217;s outputs.</p>
 <p>You&#8217;ve seen quite a bit about cacheable tasks, which implies there are non-cacheable ones, too. If caching task outputs is as awesome as it sounds, why not cache every task?</p>
 </div>
 <div class="paragraph">
-<p>There are tasks that are definitely worth caching: tasks that do complex, repeatable processing and produce moderate amounts of output. Compilation tasks are usually ideal candidates for caching. At the other end of the spectrum lie I/O-heavy tasks, like <code>Copy</code> and <code>Sync</code>. Moving files around locally typically cannot be sped up by copying them from a cache. Caching those tasks would even waste good resources on storing all those redundant results in the cache.</p>
+<p>There are tasks that are definitely worth caching: tasks that do complex, repeatable processing and produce moderate amounts of output. Compilation tasks are usually ideal candidates for caching. At the other end of the spectrum lie I/O-heavy tasks, like <code>Copy</code> and <code>Sync</code>. Moving files around locally typically cannot be sped up by copying them from a cache. Caching those tasks would even waste good resources by storing all those redundant results in the cache.</p>
 </div>
 <div class="paragraph">
 <p>Most tasks are either obviously worth caching, or obviously not. For those in-between a good rule of thumb is to see if downloading results would be significantly faster than producing them locally.</p>
@@ -597,14 +593,28 @@ If a developer now modifies a method&#8217;s body in the library, the library wi
 <div class="paragraph">
 <p>Compile avoidance works out of the box.
 There is one caveat though: when using annotation processors, Gradle uses the annotation processor classpath as an input.
-As this is a runtime classpath, less <a href="#runtime_classpath">input normalization</a> is taking place there.
-When the annotation processor classpath is not set explicitly, it defaults to the compile classpath, which in turn means the compile classpath is treated as a runtime classpath input.</p>
+Unlike most compile dependencies, in which only the ABI influences compilation, the <em>implementation</em> of annotation processors must be considered as an input to the compiler. For this reason Gradle will treat annotation processors as a <em>runtime</em> classpath, meaning less <a href="#runtime_classpath">input normalization</a> is taking place there.
+If Gradle detects an annotation processor on the compile classpath, the annotation processor classpath defaults to the compile classpath when not explicitly set, which in turn means the entire compile classpath is treated as a runtime classpath input.</p>
 </div>
 <div class="paragraph">
 <p>For the example above this would mean the ABI extracted from the compile classpath would be unchanged, but the annotation processor classpath (because it&#8217;s not treated with compile avoidance) would be different. Ultimately, the developer would end up having to recompile the application.</p>
 </div>
 <div class="paragraph">
-<p>The easiest way to avoid this performance penalty is to not use annotation processors. If you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The <a href="https://docs.gradle.org/4.0-rc-2/userguide/java_plugin.html#sec:java_compile_avoidance">user guide</a> describes how to do this.</p>
+<p>The easiest way to avoid this performance penalty is to not use annotation processors. However, if you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The <a href="https://docs.gradle.org/4.0-rc-2/userguide/java_plugin.html#sec:java_compile_avoidance">user guide</a> describes how to do this.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Some common Java dependencies (such as Log4j 2.x) come bundled with annotation processors. If you use these dependencies, but to not leverage the features of the bundled annotation processors, it&#8217;s best to disable annotation processing entirely. This can be done by setting the annotation processor classpath to an empty set.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -670,7 +680,7 @@ See also the section on dealing with <a href="#volatile_outputs">non-repeatable 
 <div class="paragraph">
 <p>You will probably pass some information from the build environment to your integration test tasks by using system properties.
 When passing file locations, use only relative paths whenever possible, and add the input file as an input manually, so that Gradle can track changes to the contents of the file.
-(This works with directories as well.)
+The same should be applied to directories as well.
 Passing absolute paths will break <a href="#relocatability">relocatability</a> of the integration test task.
 For example, with a task called <code>integTest</code>, instead of this:</p>
 </div>
@@ -801,15 +811,15 @@ When you are happy with the performance in the single workspace use-case, then, 
 </ul>
 </div>
 <div class="paragraph">
-<p>After these experiments with fully cache builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
+<p>After these experiments with fully cached builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
 If the results are not satisfactory you can think about restructuring your project to reduce dependencies between different tasks.</p>
 </div>
 <div class="paragraph">
-<p>We had good experiences with recording execution times of our builds, generate graphs of those and then look at the results.
-You then can look for certain patterns, like a rebuilding everything even though you expected compilation to be cached.</p>
+<p>Consider recording execution times of your builds, generating graphs, and anlyzing the results.
+Keep an eye out for certain patterns, like a build recompiling everything even though you expected compilation to be cached.</p>
 </div>
 <div class="paragraph">
-<p>You can also make certain changes to your code base manually or automatically and check that the expected set of tasks is cached.</p>
+<p>You can also make changes to your code base manually or automatically and check that the expected set of tasks is cached.</p>
 </div>
 <div class="paragraph">
 <p>If you have tasks that are re-executing instead of pulling their outputs from the cache, then it may point to a problem in your build.
@@ -856,7 +866,7 @@ A list of all inputs to the computed build cache key can be found in the <a href
 </ul>
 </div>
 <div class="paragraph">
-<p>Currently, both the build cache key for the task and information down to the individual input property level is available in the info log:</p>
+<p>Currently, both the build cache key for the task and information down to the individual input property level is logged at the <code>INFO</code> level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -907,7 +917,7 @@ Since you were expecting more tasks to be cached, you should be able to pinpoint
 </div>
 <div class="paragraph">
 <p>Before diving into how to find out why one task has not been loaded from the cache we should first look into which task caused the cache misses.
-There is a cascade effect causing dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
+There is a cascade effect which causes dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
 Therefore, you should locate the first cacheable task which was executed and continue investigating from there.
 This can be done from the timeline view in a build scan or from the task input comparison directly:</p>
 </div>
@@ -1027,7 +1037,7 @@ Developers can always re-run the build with <code>clean</code>, and "fix" their 
 In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."</p>
 </div>
 <div class="paragraph">
-<p>With cacheable tasks incorrect results are stored permanently, and can come back to haunt you later; re-running with <code>clean</code> won&#8217;t achieve much either. When using a shared cache, these problems even cross machine boundaries. In the example above, Gradle might end up loading a result for your task that was produced with a different configuration. Resolving these problems with the build thus becomes even more important when task output caching is enabled.</p>
+<p>With cacheable tasks incorrect results are stored permanently, and can come back to haunt you later; re-running with <code>clean</code> won&#8217;t help in this situation either. When using a shared cache, these problems even cross machine boundaries. In the example above, Gradle might end up loading a result for your task that was produced with a different configuration. Resolving these problems with the build therefore becomes even more important when task output caching is enabled.</p>
 </div>
 <div class="paragraph">
 <p>Other issues with the build won&#8217;t cause it to produce incorrect results, but will lead to unnecessary cache misses.
@@ -1072,7 +1082,7 @@ You can do so in your <code>gradle.properties</code>:</p>
 <h3 id="environment_variable_tracking"><a class="anchor" href="#environment_variable_tracking"></a>6.2. Environment variable tracking</h3>
 <div class="paragraph">
 <p>Gradle does not track changes in environment variables for tasks.
-For example for the <code>Test</code> tasks it is completely possible that the outcome depends on a few environment variables.
+For example for <code>Test</code> tasks it is completely possible that the outcome depends on a few environment variables.
 To ensure that only the right artifacts are re-used between builds, you need to add environment variables as inputs to tasks depending on them.</p>
 </div>
 <div class="paragraph">
@@ -1136,7 +1146,7 @@ If sharing the build cache across multiple operating systems is important in you
 <div class="sect2">
 <h3 id="symbolic_links"><a class="anchor" href="#symbolic_links"></a>6.4. Symbolic links</h3>
 <div class="paragraph">
-<p>Gradle does not store the symbolic link in the build cache but the actual file contents of the destination of the link.
+<p>When using symbolic links, Gradle does not store the link in the build cache but the actual file contents of the destination of the link.
 As a consequence you might have a hard time when trying to re-use outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.</p>
 </div>
@@ -1144,8 +1154,8 @@ There currently is no workaround for this behavior.</p>
 <div class="sect2">
 <h3 id="java_version_tracking"><a class="anchor" href="#java_version_tracking"></a>6.5. Java version tracking</h3>
 <div class="paragraph">
-<p>Gradle does track the major version of Java as an input for compilation and test execution.
-Currently, it does not track the vendor nor the minor version.
+<p>Gradle tracks only the major version of Java as an input for compilation and test execution.
+Currently, it does <em>not</em> track the vendor nor the minor version.
 Still, the vendor and the minor version may influence the bytecode produced by compilation.</p>
 </div>
 <div class="paragraph">
@@ -1216,14 +1226,14 @@ Therefore, you can expect differences in the bytecode of compiled Groovy classes
 <h3 id="avoid_changing_inputs_external_to_your_build"><a class="anchor" href="#avoid_changing_inputs_external_to_your_build"></a>6.6. Avoid changing inputs external to your build</h3>
 <div class="paragraph">
 <p>If your build is dependent on external dependencies like binary artifacts or dynamic data from a web page you need to make sure that these inputs are consistent throughout your infrastructure.
-When there are some variations between machines then there will be no cache hits.</p>
+Any variations across machines will result in cache misses.</p>
 </div>
 <div class="paragraph">
 <p>Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache re-use between machines (it’s because they have different versions of that artifact).</p>
 </div>
 <div class="paragraph">
 <p>Using <code>SNAPSHOT</code>s or other changing dependencies in your build by design violates the <a href="#stable_task_inputs">stable task inputs</a> principle.
-To use of the build cache effectively, you should depend on fixed dependencies.
+To use the build cache effectively, you should depend on fixed dependencies.
 You may want to look into the <a href="https://github.com/nebula-plugins/gradle-dependency-lock-plugin">dependency lock plugin</a> or switch to using <a href="https://docs.gradle.org/4.0-rc-2/userguide/composite_builds.html">composite builds</a> instead.</p>
 </div>
 <div class="paragraph">
@@ -1363,7 +1373,7 @@ If possible, you should avoid going down that route.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="limit_the_effect_volative_data"><a class="anchor" href="#limit_the_effect_volative_data"></a>6.8.3. Limit the effect volative data</h4>
+<h4 id="limit_the_effect_of_volatile_data"><a class="anchor" href="#limit_the_effect_of_volatile_data"></a>6.8.3. Limit the effect of volatile data</h4>
 <div class="paragraph">
 <p>If none of the described solutions for dealing with volatile data work for you, you should still be able to limit the effect of volatile data on effective use of the build cache.
 This can be done by adding the volatile data later to the outputs as described in <a href="#volatile_inputs">"Volatile task inputs"</a>.
@@ -1373,7 +1383,7 @@ For example moving the dependency from the <code>compile</code> to the <code>run
 <div class="paragraph">
 <p>Sometimes it is also possible to build two artifacts, one containing the volatile data and another one containing a constant representation of the volatile data.
 The non-volatile output would be used e.g. for testing while the volatile one would be published to an external repository.
-This is in conflict with the Continuous Delivery "build artifacts once" principle but can sometimes be the only option.</p>
+While this conflicts with the Continuous Delivery "build artifacts once" principle it can sometimes be the only option.</p>
 </div>
 </div>
 </div>
@@ -1408,10 +1418,10 @@ In the worst case this can lead to incorrect builds when the plugins try to depe
 <h2 id="summary"><a class="anchor" href="#summary"></a>7. Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You learned about the two ways Gradle can avoid work and we showed you the concepts which make up a build which is effectively using task output caching.
+<p>This guide has described the two ways Gradle can avoid work and the concepts which make up a build that effectively leverages task output caching.
 You should now have the knowledge to adapt your own build so it can make effective use of the build cache.
 By doing so, you will improve incremental build performance while having fast clean builds when using the build cache.
-Remember, the best way to do work faster is to not do work that doesn’t need doing.</p>
+Remember, the best way to do work faster is to simply avoid work that doesn’t need doing.</p>
 </div>
 <div class="paragraph">
 <p>Be aware that your journey does not end here.
@@ -1426,7 +1436,7 @@ They will continue improving the build cache and give you more tools to make you
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-13 21:18:39 UTC
+Last updated 2017-06-14 07:27:12 UTC
 </div>
 </div>
 </body>
