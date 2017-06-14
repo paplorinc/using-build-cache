@@ -179,7 +179,25 @@ A typical use case for this is when developers start their day, pull all changes
 Developers can make changes to task inputs or outputs while the task is executing.
 They can do this unintentionally and without noticing, for example by making changes in their IDEs while a build is running.
 Currently, Gradle has no good way to defend against these changes, and will simply cache whatever is in the output directory once the task is finished.
-This again can lead to corrupted results being uploaded to the shared cache.</p>
+This again can lead to corrupted results being uploaded to the shared cache.
+This recommendation might change when Gradle has added the necessary safeguards against unintentional modification of task inputs and outputs.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you want to share task output from incremental builds, i.e. non-clean builds, you have to make sure that all cacheable tasks are properly configured and implemented to deal with stale output.
+There are for example annotation processors that do not clean up stale files in the corresponding classes/resources directories.
+The cache is a great forcing function to fix these problems, which will also make your incremental builds much more reliable.
+At the same time, until you have confidence that the incremental build behavior is flawless, only use clean builds to upload content to the cache.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1428,7 +1446,7 @@ They will continue improving the build cache and give you more tools to make you
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-14 12:00:29 UTC
+Last updated 2017-06-14 13:59:25 UTC
 </div>
 </div>
 </body>
