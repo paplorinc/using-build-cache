@@ -1127,11 +1127,16 @@ A list of all inputs to the computed build cache key can be found in the <a href
 </ul>
 </div>
 <div class="paragraph">
-<p>Currently, both the build cache key for the task and information down to the individual input property level is logged at the <code>INFO</code> level:</p>
+<p>If you want information about the build cache key and individual input property hashes, use <a href="https://docs.gradle.org/4.5/userguide/build_environment.html#sec:gradle_configuration_properties"><code>-Dorg.gradle.caching.debug=true</code></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
+<pre>$ ./gradlew :compileJava --build-cache -Dorg.gradle.caching.debug=true
+
+.
+.
+.
+Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
 Appending classLoaderHash to build cache key: da6eca52100422099189290bf68f200a
 Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.AbstractOutputPropertyAnnotationHandler$2$1
 Appending actionClassLoaderHash to build cache key: 2cdf3f9202925b5befa161030ab43724
