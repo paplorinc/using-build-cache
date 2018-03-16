@@ -1470,6 +1470,12 @@ If sharing the build cache across multiple operating systems is important in you
 As a consequence you might have a hard time when trying to reuse outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.</p>
 </div>
+<div class="paragraph">
+<p>For operating systems supporting symbolic links, the content of the destination of the symbolic link will be added as an input.
+If the operating system does not support symbolic links, the actual symbolic link file is added as an input.
+Therefore, tasks which have symbolic links as input files, e.g. <code>Test</code> tasks having symbolic link as part of its runtime classpath, will not be cached between Windows and Linux.
+If caching between operating systems is desired, symbolic links should not be checked into version control.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="java_version_tracking"><a class="anchor" href="#java_version_tracking"></a><a class="link" href="#java_version_tracking">Java version tracking</a></h3>
