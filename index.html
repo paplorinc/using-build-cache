@@ -570,7 +570,7 @@ jar {
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">version = "3.2-${System.currentTimeMillis()}"
 
-tasks.getByName&lt;Jar&gt;("jar") {
+tasks.jar {
     manifest {
         attributes(mapOf("Implementation-Version" to version))
     }
@@ -1709,9 +1709,7 @@ class CurrentVersionInfo extends DefaultTask {
     versionInfoFile = File(generatedResourcesDir, "currentVersion.properties")
 }
 
-sourceSets["main"].output.dir(
-    mapOf("builtBy" to currentVersionInfo),
-    generatedResourcesDir)
+sourceSets.main { output.dir(generatedResourcesDir, "builtBy" to currentVersionInfo) }
 
 open class CurrentVersionInfo : DefaultTask() {
     @Input
@@ -2059,13 +2057,13 @@ E.g., instead of doing</p>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.getByName&lt;Jar&gt;("jar") {
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.jar {
     doFirst {
         manifest {
             val classPath = listOf(":core", ":baseServices").joinToString(" ") {
-                (project(it).tasks["jar"] as Jar).archivePath.name
+                project(it).tasks.getByName&lt;Jar&gt;("jar").archivePath.name
             }
-            attributes(mapOf("Class-Path" to classPath))
+            attributes("Class-Path" to classPath)
         }
     }
 }</code></pre>
@@ -2093,18 +2091,17 @@ jar.dependsOn(configureJar)</code></pre>
 <div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks {
-    val jar = getByName&lt;Jar&gt;("jar")
     val configureJar = create("configureJar") {
         doLast {
-            jar.manifest {
+            jar.get().manifest {
                 val classPath = listOf(":core", ":baseServices").joinToString(" ") {
-                    (project(it).tasks["jar"] as Jar).archivePath.name
+                    project(it).tasks.getByName&lt;Jar&gt;("jar").archivePath.name
                 }
-                attributes(mapOf("Class-Path" to classPath))
+                attributes("Class-Path" to classPath)
             }
         }
     }
-    jar.dependsOn(configureJar)
+    jar { dependsOn(configureJar) }
 }</code></pre>
 </div>
 </div>
