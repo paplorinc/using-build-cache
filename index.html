@@ -280,9 +280,11 @@ A typical use case for this is when developers start their day, pull all changes
 </div>
 </div>
 <div class="sect2">
-<h3 id="combine_ci_results_with_local_caching_on_developer_machines"><a class="anchor" href="#combine_ci_results_with_local_caching_on_developer_machines"></a><a class="link" href="#combine_ci_results_with_local_caching_on_developer_machines">Combine CI results with local caching on developer machines</a></h3>
+<h3 id="combine_remote_results_with_local_caching"><a class="anchor" href="#combine_remote_results_with_local_caching"></a><a class="link" href="#combine_remote_results_with_local_caching">Combine remote results with local caching</a></h3>
 <div class="paragraph">
-<p>Developers can utilize both a local and a remote cache. While loading results from a CI-filled remote cache helps to avoid work needed because of changes by other developers, the local cache can speed up switching branches and doing <code>git bisect</code>.</p>
+<p>You can utilize both a local and a remote cache for a compound effect.
+While loading results from a CI-filled remote cache helps to avoid work needed because of changes by other developers, the local cache can speed up switching branches and doing <code>git bisect</code>.
+On CI machines the local cache can act as a mirror of the remote cache, significantly reducing network usage.</p>
 </div>
 </div>
 <div class="sect2">
