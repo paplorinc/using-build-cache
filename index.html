@@ -673,7 +673,7 @@ For details on what level of understanding Gradle has for detecting changes to c
 <p>Given that you want to add a file <code>build-info.properties</code> to all your produced jar files which contains volatile information about the build, e.g. the timestamp when the build started or some ID to identify the CI job that published the artifact.
 This file is only used for auditing purposes, and has no effect on the outcome of running tests.
 Nonetheless, this file is part of the runtime classpath for the <code>test</code> task. Since the file changes on every build invocation, tests cannot be cached effectively.
-To fix this you can ignore <code>build-info.properties</code> on any runtime classpath by adding the following configuration to the build script:</p>
+To fix this you can ignore <code>build-info.properties</code> on any runtime classpath by adding the following configuration to the build script in the <em>consuming</em> project:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
@@ -694,6 +694,9 @@ To fix this you can ignore <code>build-info.properties</code> on any runtime cla
     }
 }</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>If adding such a file to your jar files is something you do for all of the projects in your build, and you want to filter this file for all consumers, you may wrap the configurations described above in an <code>allprojects {}</code> or <code>subprojects {}</code> block in the root build script.</p>
 </div>
 <div class="paragraph">
 <p>The effect of this configuration would be that changes to <code>build-info.properties</code> would be ignored for both up-to-date checks and task output caching.
