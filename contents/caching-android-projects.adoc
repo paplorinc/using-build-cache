@@ -66,9 +66,7 @@ There is an https://youtrack.jetbrains.com/issue/KT-27675[open issue] on the Jet
 
 === Unit test execution
 
-Unlike with unit tests in a pure Java project, the equivalent test task in an Android project (`AndroidUnitTest`) is not cacheable.
-The Google Team is working to make these tests cacheable.
-Please see https://issuetracker.google.com/issues/79122161[this issue].
+Before https://issuetracker.google.com/issues/115873047#comment24[AGP 3.6.0-alpha02] the test task in an Android project (`AndroidUnitTest`) was not cacheable.
 
 === Instrumented test execution (i.e., Espresso tests)
 
